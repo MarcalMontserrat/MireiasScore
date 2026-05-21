@@ -2,698 +2,124 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🏀 Marcador Pre-Mini</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --orange: #e85d04;
-      --orange-dark: #c44f03;
-      --bg: #0d0d0d;
-      --surface: #1a1a1a;
-      --surface2: #242424;
-      --text: #f5f5f5;
-      --muted: #888;
-      --green: #2ec27e;
-      --red: #e01b24;
-    }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px;
-      gap: 14px;
-    }
-
-    h1 {
-      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--orange);
-      text-align: center;
-    }
-
-    /* ── TIMER + QUARTER BAR ── */
-    .top-bar {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      background: var(--surface);
-      border-radius: 14px;
-      padding: 12px 20px;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .quarter-group {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .quarter-btn {
-      background: var(--surface2);
-      border: 2px solid transparent;
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .quarter-btn.active  { border-color: var(--orange); color: var(--orange); }
-    .quarter-btn.played  { color: var(--text); }
-    .quarter-btn:hover:not(.active) { color: var(--text); }
-
-    .timer-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .timer-display {
-      font-size: clamp(2rem, 7vw, 3.2rem);
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 4px;
-      cursor: pointer;
-      color: var(--text);
-      transition: color .15s;
-      line-height: 1;
-    }
-    .timer-display.running { color: var(--green); }
-    .timer-display.low     { color: var(--red); }
-
-    .btn-sm {
-      background: var(--surface2);
-      border: none;
-      color: var(--text);
-      border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s;
-    }
-    .btn-sm:hover { background: #333; }
-    .btn-sm.primary { background: var(--orange); }
-    .btn-sm.primary:hover { background: var(--orange-dark); }
-
-    .timer-min-input {
-      width: 50px;
-      background: var(--surface2);
-      border: 1px solid #444;
-      color: var(--text);
-      border-radius: 6px;
-      padding: 4px 6px;
-      font-size: 0.8rem;
-      text-align: center;
-    }
-
-    /* ── MAIN SCOREBOARD ── */
-    .scoreboard {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 10px;
-      width: 100%;
-      max-width: 900px;
-      align-items: center;
-    }
-
-    .team-panel {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 18px 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .team-name {
-      font-size: clamp(1rem, 3vw, 1.3rem);
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-align: center;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      width: 100%;
-      outline: none;
-      border-bottom: 2px solid transparent;
-      transition: border-color .2s;
-    }
-    .team-name:focus { border-bottom-color: var(--orange); }
-
-    .total-score {
-      font-size: clamp(4.5rem, 15vw, 8rem);
-      font-weight: 900;
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-      color: var(--orange);
-    }
-
-    .quarter-score-label {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-
-    .quarter-score-val {
-      font-size: 1.6rem;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-      color: var(--text);
-    }
-
-    .score-btns {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .btn-score {
-      background: var(--orange);
-      border: none;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 800;
-      border-radius: 10px;
-      padding: 10px 16px;
-      cursor: pointer;
-      transition: background .12s, transform .1s;
-      min-width: 50px;
-    }
-    .btn-score:hover  { background: var(--orange-dark); }
-    .btn-score:active { transform: scale(.95); }
-    .btn-score.minus  { background: var(--surface2); color: var(--muted); }
-    .btn-score.minus:hover { background: #333; color: var(--text); }
-
-    .fouls-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.82rem;
-    }
-    .fouls-label { color: var(--muted); font-weight: 600; }
-    .foul-dots   { display: flex; gap: 4px; }
-    .foul-dot {
-      width: 13px; height: 13px;
-      border-radius: 50%;
-      border: 2px solid var(--muted);
-      cursor: pointer;
-      transition: background .12s, border-color .12s;
-    }
-    .foul-dot.active { background: var(--red); border-color: var(--red); }
-
-    /* center VS column */
-    .vs-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .vs-text { font-size: 1rem; font-weight: 700; color: var(--muted); letter-spacing: 2px; }
-
-    /* ── QUARTER BREAKDOWN TABLE ── */
-    .breakdown {
-      width: 100%;
-      max-width: 900px;
-      background: var(--surface);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-
-    .breakdown table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    .breakdown th, .breakdown td {
-      padding: 8px 10px;
-      text-align: center;
-      border-bottom: 1px solid var(--surface2);
-    }
-
-    .breakdown thead th {
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      background: var(--surface2);
-    }
-
-    .breakdown td:first-child {
-      color: var(--muted);
-      font-weight: 700;
-      font-size: 0.75rem;
-    }
-
-    .breakdown tr.current-quarter td {
-      background: #1f1500;
-      color: var(--orange);
-      font-weight: 700;
-    }
-
-    .breakdown tr.total-row td {
-      font-weight: 900;
-      font-size: 1rem;
-      color: var(--orange);
-      border-top: 2px solid var(--orange-dark);
-      border-bottom: none;
-    }
-
-    .breakdown tr:last-child td { border-bottom: none; }
-
-    /* ── ACTIONS ── */
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .btn-action {
-      background: var(--surface);
-      border: none;
-      color: var(--text);
-      border-radius: 10px;
-      padding: 9px 20px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s;
-    }
-    .btn-action:hover { background: var(--surface2); }
-    .btn-action.danger { color: var(--red); }
-    .btn-action.danger:hover { background: #2a1010; }
-
-    /* ── HISTORY ── */
-    .history-block { width: 100%; max-width: 900px; }
-    details summary {
-      cursor: pointer;
-      font-size: 0.82rem;
-      color: var(--muted);
-      padding: 4px 0;
-      user-select: none;
-    }
-    .history-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 8px;
-      max-height: 180px;
-      overflow-y: auto;
-    }
-    .history-list li {
-      background: var(--surface);
-      border-radius: 6px;
-      padding: 5px 12px;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-    .history-list li span { color: var(--text); font-weight: 600; }
-
-    /* ── MODAL ── */
-    .modal-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.8);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 28px 32px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      max-width: 320px;
-      width: 90%;
-    }
-    .modal h2 { font-size: 1.05rem; }
-    .modal p  { font-size: 0.88rem; color: var(--muted); }
-    .modal .btn-row { display: flex; gap: 10px; justify-content: center; }
-
-    @media (max-width: 560px) {
-      .scoreboard { grid-template-columns: 1fr 1fr; }
-      .vs-col { display: none; }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>🏀 Pre-Mini Marcador</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <h1>🏀 Pre-Mini · Marcador</h1>
 
-  <!-- TOP BAR: quarters + timer -->
-  <div class="top-bar">
-    <div class="quarter-group" id="quarterBtns"></div>
-    <div class="timer-row">
-      <div class="timer-display" id="timerDisplay" title="Clic para iniciar/pausar">00:00</div>
-      <button class="btn-sm primary" id="btnStartStop">▶ Iniciar</button>
-      <button class="btn-sm" id="btnResetTimer">↺</button>
-      <input class="timer-min-input" id="timerMinInput" type="number" min="1" max="60" value="8" title="Minutos por cuarto" />
-      <span style="font-size:.78rem;color:var(--muted)">min</span>
+  <header>
+    <h1>🏀 Pre-Mini</h1>
+  </header>
+
+  <!-- QUARTER SELECTOR + TIMER -->
+  <section class="top-bar">
+    <div class="quarter-scroll">
+      <div class="quarter-group" id="quarterBtns"></div>
     </div>
-  </div>
+    <div class="timer-row">
+      <button class="btn-icon" id="btnResetTimer" title="Reiniciar cronómetro">↺</button>
+      <div class="timer-display" id="timerDisplay">08:00</div>
+      <button class="btn-start-stop" id="btnStartStop">▶</button>
+      <div class="timer-cfg">
+        <input id="timerMinInput" type="number" min="1" max="60" value="8" />
+        <span>min</span>
+      </div>
+    </div>
+  </section>
 
-  <!-- MAIN SCOREBOARD -->
-  <div class="scoreboard">
+  <!-- MAIN SCOREBOARD: 2 columns -->
+  <main class="scoreboard">
+
     <!-- TEAM A -->
-    <div class="team-panel">
-      <input class="team-name" id="nameA" type="text" value="LOCAL" maxlength="20" />
+    <div class="team" id="teamA">
+      <input class="team-name" id="nameA" type="text" value="LOCAL" maxlength="16" autocomplete="off" />
       <div class="total-score" id="totalA">0</div>
-      <div class="quarter-score-label" id="labelQA">Q1 · 0 pts</div>
+      <div class="quarter-pts" id="qptsA">Q1 · 0</div>
       <div class="score-btns">
-        <button class="btn-score" onclick="addScore('A',1)">+1</button>
-        <button class="btn-score" onclick="addScore('A',2)">+2</button>
-        <button class="btn-score" onclick="addScore('A',3)">+3</button>
-        <button class="btn-score minus" onclick="addScore('A',-1)">−1</button>
+        <button class="btn-score" data-team="A" data-pts="1">+1</button>
+        <button class="btn-score" data-team="A" data-pts="2">+2</button>
+        <button class="btn-score" data-team="A" data-pts="3">+3</button>
+        <button class="btn-score minus" data-team="A" data-pts="-1">−1</button>
       </div>
       <div class="fouls-row">
-        <span class="fouls-label">Faltas:</span>
+        <span class="fouls-label">Faltas</span>
         <div class="foul-dots" id="foulsA"></div>
-        <button class="btn-sm" onclick="clearFouls('A')" style="padding:3px 8px">✕</button>
+        <button class="btn-clear-fouls" data-team="A">✕</button>
       </div>
-    </div>
-
-    <!-- VS -->
-    <div class="vs-col">
-      <span class="vs-text">VS</span>
     </div>
 
     <!-- TEAM B -->
-    <div class="team-panel">
-      <input class="team-name" id="nameB" type="text" value="VISITANTE" maxlength="20" />
+    <div class="team" id="teamB">
+      <input class="team-name" id="nameB" type="text" value="VISITANTE" maxlength="16" autocomplete="off" />
       <div class="total-score" id="totalB">0</div>
-      <div class="quarter-score-label" id="labelQB">Q1 · 0 pts</div>
+      <div class="quarter-pts" id="qptsB">Q1 · 0</div>
       <div class="score-btns">
-        <button class="btn-score" onclick="addScore('B',1)">+1</button>
-        <button class="btn-score" onclick="addScore('B',2)">+2</button>
-        <button class="btn-score" onclick="addScore('B',3)">+3</button>
-        <button class="btn-score minus" onclick="addScore('B',-1)">−1</button>
+        <button class="btn-score" data-team="B" data-pts="1">+1</button>
+        <button class="btn-score" data-team="B" data-pts="2">+2</button>
+        <button class="btn-score" data-team="B" data-pts="3">+3</button>
+        <button class="btn-score minus" data-team="B" data-pts="-1">−1</button>
       </div>
       <div class="fouls-row">
-        <span class="fouls-label">Faltas:</span>
+        <span class="fouls-label">Faltas</span>
         <div class="foul-dots" id="foulsB"></div>
-        <button class="btn-sm" onclick="clearFouls('B')" style="padding:3px 8px">✕</button>
+        <button class="btn-clear-fouls" data-team="B">✕</button>
       </div>
     </div>
-  </div>
 
-  <!-- QUARTER BREAKDOWN TABLE -->
-  <div class="breakdown">
-    <table id="breakdownTable">
-      <thead><tr>
-        <th>Cuarto</th>
-        <th id="thA">LOCAL</th>
-        <th id="thB">VISITANTE</th>
-      </tr></thead>
-      <tbody id="breakdownBody"></tbody>
-    </table>
-  </div>
+  </main>
 
-  <!-- ACTIONS -->
-  <div class="actions">
-    <button class="btn-action" onclick="undoLast()">↩ Deshacer</button>
-    <button class="btn-action danger" onclick="openResetModal()">🔄 Reiniciar partido</button>
-  </div>
+  <!-- BOX SCORE TABLE -->
+  <section class="box-score">
+    <details>
+      <summary>Desglose por cuarto</summary>
+      <div class="table-wrap">
+        <table id="boxTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="th-team" id="thA">LOCAL</th>
+              <th class="th-team" id="thB">VISITANTE</th>
+            </tr>
+          </thead>
+          <tbody id="boxBody"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <!-- BOTTOM ACTIONS -->
+  <footer class="actions">
+    <button class="btn-action" id="btnUndo">↩ Deshacer</button>
+    <button class="btn-action danger" id="btnReset">🔄 Reiniciar</button>
+  </footer>
 
   <!-- HISTORY -->
-  <div class="history-block">
+  <section class="history-block">
     <details>
-      <summary>📋 Historial de puntos</summary>
+      <summary>📋 Historial</summary>
       <ul class="history-list" id="historyList"></ul>
     </details>
-  </div>
+  </section>
 
   <!-- RESET MODAL -->
-  <div class="modal-overlay" id="resetModal">
+  <div class="modal-overlay" id="resetModal" role="dialog" aria-modal="true">
     <div class="modal">
       <h2>¿Reiniciar partido?</h2>
       <p>Se borrarán todos los puntos, faltas e historial.</p>
-      <div class="btn-row">
-        <button class="btn-sm primary" onclick="confirmReset()">Sí, reiniciar</button>
-        <button class="btn-sm" onclick="closeResetModal()">Cancelar</button>
+      <div class="modal-btns">
+        <button class="btn-action danger" id="btnConfirmReset">Sí, reiniciar</button>
+        <button class="btn-action" id="btnCancelReset">Cancelar</button>
       </div>
     </div>
   </div>
 
-  <script>
-    // ─── CONSTANTS ────────────────────────────────────────────────────────────
-    const NUM_QUARTERS = 8;
-    const MAX_FOULS    = 5;
-    const QUARTER_LABELS = Array.from({ length: NUM_QUARTERS }, (_, i) => `Q${i + 1}`);
-
-    // ─── STATE ────────────────────────────────────────────────────────────────
-    // quarterPts[team][q] = points scored in that quarter (0-indexed)
-    const state = {
-      quarterPts: {
-        A: Array(NUM_QUARTERS).fill(0),
-        B: Array(NUM_QUARTERS).fill(0),
-      },
-      fouls:   { A: 0, B: 0 },
-      quarter: 0,   // 0-indexed current quarter
-      history: [],  // { team, pts, quarter, time }
-    };
-
-    function totalScore(team) {
-      return state.quarterPts[team].reduce((s, v) => s + v, 0);
-    }
-
-    // ─── QUARTER BUTTONS ──────────────────────────────────────────────────────
-    function renderQuarterBtns() {
-      const container = document.getElementById('quarterBtns');
-      container.innerHTML = '';
-      QUARTER_LABELS.forEach((label, i) => {
-        const btn = document.createElement('button');
-        const hasPoints = state.quarterPts.A[i] > 0 || state.quarterPts.B[i] > 0;
-        btn.className = 'quarter-btn' +
-          (state.quarter === i ? ' active' : '') +
-          (hasPoints && state.quarter !== i ? ' played' : '');
-        btn.textContent = label;
-        btn.onclick = () => { state.quarter = i; render(); };
-        container.appendChild(btn);
-      });
-    }
-
-    // ─── SCORE ────────────────────────────────────────────────────────────────
-    function addScore(team, pts) {
-      const q = state.quarter;
-      const newVal = state.quarterPts[team][q] + pts;
-      if (newVal < 0) return; // can't go below 0 in a quarter
-      state.quarterPts[team][q] = newVal;
-      state.history.push({
-        team, pts, quarter: q,
-        time: document.getElementById('timerDisplay').textContent,
-        totalA: totalScore('A'),
-        totalB: totalScore('B'),
-      });
-      render();
-    }
-
-    function undoLast() {
-      const last = state.history.pop();
-      if (!last) return;
-      state.quarterPts[last.team][last.quarter] =
-        Math.max(0, state.quarterPts[last.team][last.quarter] - last.pts);
-      render();
-    }
-
-    // ─── FOULS ────────────────────────────────────────────────────────────────
-    function renderFouls(team) {
-      const container = document.getElementById('fouls' + team);
-      container.innerHTML = '';
-      for (let i = 0; i < MAX_FOULS; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'foul-dot' + (i < state.fouls[team] ? ' active' : '');
-        dot.onclick = () => {
-          state.fouls[team] = (i < state.fouls[team]) ? i : i + 1;
-          renderFouls(team);
-        };
-        container.appendChild(dot);
-      }
-    }
-
-    function clearFouls(team) {
-      state.fouls[team] = 0;
-      renderFouls(team);
-    }
-
-    // ─── BREAKDOWN TABLE ──────────────────────────────────────────────────────
-    function renderBreakdown() {
-      // sync header with team names
-      document.getElementById('thA').textContent =
-        document.getElementById('nameA').value || 'LOCAL';
-      document.getElementById('thB').textContent =
-        document.getElementById('nameB').value || 'VISITANTE';
-
-      const tbody = document.getElementById('breakdownBody');
-      tbody.innerHTML = '';
-
-      QUARTER_LABELS.forEach((label, i) => {
-        const tr = document.createElement('tr');
-        if (i === state.quarter) tr.className = 'current-quarter';
-        tr.innerHTML = `
-          <td>${label}</td>
-          <td>${state.quarterPts.A[i]}</td>
-          <td>${state.quarterPts.B[i]}</td>`;
-        tbody.appendChild(tr);
-      });
-
-      // totals row
-      const totRow = document.createElement('tr');
-      totRow.className = 'total-row';
-      totRow.innerHTML = `
-        <td>TOTAL</td>
-        <td>${totalScore('A')}</td>
-        <td>${totalScore('B')}</td>`;
-      tbody.appendChild(totRow);
-    }
-
-    // ─── HISTORY ──────────────────────────────────────────────────────────────
-    function renderHistory() {
-      const list = document.getElementById('historyList');
-      list.innerHTML = '';
-      [...state.history].reverse().forEach(e => {
-        const li = document.createElement('li');
-        const name = document.getElementById('name' + e.team).value || e.team;
-        const sign = e.pts > 0 ? '+' : '';
-        li.innerHTML = `[${QUARTER_LABELS[e.quarter]} · ${e.time}] <span>${name}</span> ${sign}${e.pts}  →  ${e.totalA} – ${e.totalB}`;
-        list.appendChild(li);
-      });
-    }
-
-    // ─── MAIN RENDER ──────────────────────────────────────────────────────────
-    function render() {
-      const q = state.quarter;
-      document.getElementById('totalA').textContent = totalScore('A');
-      document.getElementById('totalB').textContent = totalScore('B');
-      document.getElementById('labelQA').textContent =
-        `${QUARTER_LABELS[q]} · ${state.quarterPts.A[q]} pts`;
-      document.getElementById('labelQB').textContent =
-        `${QUARTER_LABELS[q]} · ${state.quarterPts.B[q]} pts`;
-      renderQuarterBtns();
-      renderFouls('A');
-      renderFouls('B');
-      renderBreakdown();
-      renderHistory();
-    }
-
-    // ─── TIMER ────────────────────────────────────────────────────────────────
-    let timerRunning = false;
-    let timerSeconds = 0;
-    let timerInterval = null;
-
-    function getConfiguredSeconds() {
-      return (parseInt(document.getElementById('timerMinInput').value, 10) || 8) * 60;
-    }
-
-    function formatTime(s) {
-      return `${Math.floor(s / 60).toString().padStart(2,'0')}:${(s % 60).toString().padStart(2,'0')}`;
-    }
-
-    function updateTimerDisplay() {
-      const el = document.getElementById('timerDisplay');
-      el.textContent = formatTime(timerSeconds);
-      el.className = 'timer-display' +
-        (timerRunning ? ' running' : '') +
-        (timerSeconds <= 30 && timerSeconds > 0 ? ' low' : '');
-    }
-
-    function startTimer() {
-      if (timerSeconds === 0) timerSeconds = getConfiguredSeconds();
-      timerRunning = true;
-      document.getElementById('btnStartStop').textContent = '⏸ Pausar';
-      timerInterval = setInterval(() => {
-        if (timerSeconds <= 0) { stopTimer(); return; }
-        timerSeconds--;
-        updateTimerDisplay();
-      }, 1000);
-    }
-
-    function stopTimer() {
-      timerRunning = false;
-      clearInterval(timerInterval);
-      document.getElementById('btnStartStop').textContent = '▶ Iniciar';
-      updateTimerDisplay();
-    }
-
-    function toggleTimer() { timerRunning ? stopTimer() : startTimer(); }
-
-    function resetTimer() {
-      stopTimer();
-      timerSeconds = getConfiguredSeconds();
-      updateTimerDisplay();
-    }
-
-    document.getElementById('btnStartStop').onclick = toggleTimer;
-    document.getElementById('btnResetTimer').onclick = resetTimer;
-    document.getElementById('timerDisplay').onclick  = toggleTimer;
-    document.getElementById('timerMinInput').addEventListener('change', () => {
-      if (!timerRunning) resetTimer();
-    });
-
-    // sync breakdown header when team names change
-    ['nameA','nameB'].forEach(id =>
-      document.getElementById(id).addEventListener('input', renderBreakdown)
-    );
-
-    // ─── RESET MODAL ──────────────────────────────────────────────────────────
-    function openResetModal()  { document.getElementById('resetModal').classList.add('open'); }
-    function closeResetModal() { document.getElementById('resetModal').classList.remove('open'); }
-    function confirmReset() {
-      state.quarterPts = { A: Array(NUM_QUARTERS).fill(0), B: Array(NUM_QUARTERS).fill(0) };
-      state.fouls      = { A: 0, B: 0 };
-      state.quarter    = 0;
-      state.history    = [];
-      stopTimer();
-      timerSeconds = getConfiguredSeconds();
-      updateTimerDisplay();
-      render();
-      closeResetModal();
-    }
-
-    document.getElementById('resetModal').addEventListener('click', e => {
-      if (e.target === e.currentTarget) closeResetModal();
-    });
-
-    // ─── KEYBOARD SHORTCUTS ──────────────────────────────────────────────────
-    document.addEventListener('keydown', e => {
-      if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
-      if (e.code === 'Space') { e.preventDefault(); toggleTimer(); }
-      if (e.key === 'z' || e.key === 'Z') undoLast();
-      // Left/Right arrows to change quarter
-      if (e.key === 'ArrowRight') { state.quarter = Math.min(NUM_QUARTERS - 1, state.quarter + 1); render(); }
-      if (e.key === 'ArrowLeft')  { state.quarter = Math.max(0, state.quarter - 1); render(); }
-    });
-
-    // ─── INIT ─────────────────────────────────────────────────────────────────
-    timerSeconds = getConfiguredSeconds();
-    updateTimerDisplay();
-    render();
-  </script>
+  <script src="js/state.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
