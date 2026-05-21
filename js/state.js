@@ -27,12 +27,12 @@ function quarterBreakdown(team, q) {
   return b;
 }
 
-// pts = 1 | 2 | 3  (add shot)  or  -1  (remove last shot)
+// pts = 1 | 2 | 3  (add shot)  or  -1  (subtract 1 pt, min 0)
 function addScore(team, pts) {
-  const q    = state.quarter;
-  const arr  = state.shots[team][q];
+  const q   = state.quarter;
+  const arr = state.shots[team][q];
   if (pts === -1) {
-    arr.pop();          // undo last shot of this team in current quarter
+    if (quarterTotal(team, q) > 0) arr.push(-1);  // store as negative adjustment
   } else {
     arr.push(pts);
   }
