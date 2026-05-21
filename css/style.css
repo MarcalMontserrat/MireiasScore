@@ -99,7 +99,6 @@ h1 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  flex: 1; /* take remaining height on large screens */
 }
 
 .team {
