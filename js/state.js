@@ -1,36 +1,47 @@
 /* State: source of truth for the entire app */
 
 const NUM_QUARTERS   = 8;
-const MAX_FOULS      = 5;
 const QUARTER_LABELS = Array.from({ length: NUM_QUARTERS }, (_, i) => `Q${i + 1}`);
 
+// shots[team][quarter] = array of point values (1, 2 or 3)
 const state = {
-  quarterPts: {
-    A: Array(NUM_QUARTERS).fill(0),
-    B: Array(NUM_QUARTERS).fill(0),
+  shots: {
+    A: Array.from({ length: NUM_QUARTERS }, () => []),
+    B: Array.from({ length: NUM_QUARTERS }, () => []),
   },
-  quarter: 0,    // 0-indexed active quarter
+  quarter: 0,
 };
 
+function quarterTotal(team, q) {
+  return state.shots[team][q].reduce((s, v) => s + v, 0);
+}
+
 function totalScore(team) {
-  return state.quarterPts[team].reduce((sum, v) => sum + v, 0);
+  return state.shots[team].reduce((s, arr) => s + arr.reduce((a, v) => a + v, 0), 0);
 }
 
+// Returns { 1: count, 2: count, 3: count } for a given quarter
+function quarterBreakdown(team, q) {
+  const b = { 1: 0, 2: 0, 3: 0 };
+  state.shots[team][q].forEach(v => { if (b[v] !== undefined) b[v]++; });
+  return b;
+}
+
+// pts = 1 | 2 | 3  (add shot)  or  -1  (remove last shot)
 function addScore(team, pts) {
-  const q   = state.quarter;
-  const cur = state.quarterPts[team][q];
-  if (cur + pts < 0) return;
-  state.quarterPts[team][q] = cur + pts;
-}
-
-function undoLast() {
-  return false; // history removed — no-op kept for safety
+  const q    = state.quarter;
+  const arr  = state.shots[team][q];
+  if (pts === -1) {
+    arr.pop();          // undo last shot of this team in current quarter
+  } else {
+    arr.push(pts);
+  }
 }
 
 function resetState() {
-  state.quarterPts = {
-    A: Array(NUM_QUARTERS).fill(0),
-    B: Array(NUM_QUARTERS).fill(0),
+  state.shots = {
+    A: Array.from({ length: NUM_QUARTERS }, () => []),
+    B: Array.from({ length: NUM_QUARTERS }, () => []),
   };
   state.quarter = 0;
 }
