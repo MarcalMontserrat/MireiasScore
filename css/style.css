@@ -56,15 +56,12 @@ h1 {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   TOP BAR  (quarters + timer)
+   TOP BAR  (quarters only)
 ───────────────────────────────────────────────────────────────────────────── */
 .top-bar {
   background: var(--surface);
   border-radius: 14px;
   padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 /* horizontally scrollable quarter strip */
@@ -99,82 +96,8 @@ h1 {
 .quarter-btn.active { border-color: var(--orange); color: var(--orange); }
 .quarter-btn.played { color: var(--text); }
 
-/* timer row */
-.timer-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.timer-display {
-  font-size: clamp(2rem, 9vw, 3rem);
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 4px;
-  line-height: 1;
-  cursor: pointer;
-  min-width: 6ch;
-  text-align: center;
-  transition: color .15s;
-}
-.timer-display.running { color: var(--green); }
-.timer-display.low     { color: var(--red); }
-
-.btn-start-stop {
-  background: var(--orange);
-  border: none;
-  color: #fff;
-  font-size: 1.2rem;
-  border-radius: 10px;
-  width: var(--tap);
-  height: var(--tap);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .12s;
-}
-.btn-start-stop:active { background: var(--orange-dark); }
-
-.btn-icon {
-  background: var(--surface2);
-  border: none;
-  color: var(--text);
-  font-size: 1.2rem;
-  border-radius: 10px;
-  width: var(--tap);
-  height: var(--tap);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-icon:active { background: #333; }
-
-.timer-cfg {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
-.timer-cfg input {
-  width: 48px;
-  background: var(--surface2);
-  border: 1px solid #444;
-  color: var(--text);
-  border-radius: 6px;
-  padding: 4px 6px;
-  font-size: 0.85rem;
-  text-align: center;
-  height: 34px;
-}
-
 /* ─────────────────────────────────────────────────────────────────────────────
-   SCOREBOARD  (mobile: side-by-side columns, no gap label)
+   DESKTOP ENHANCEMENTS  (tablet+)
 ───────────────────────────────────────────────────────────────────────────── */
 .scoreboard {
   display: grid;
@@ -261,37 +184,6 @@ h1 {
   min-height: 38px;
 }
 .btn-score.minus:active { background: #333; color: var(--text); }
-
-/* fouls */
-.fouls-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-}
-.fouls-label { color: var(--muted); font-weight: 600; }
-.foul-dots   { display: flex; gap: 4px; }
-
-.foul-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2px solid var(--muted);
-  cursor: pointer;
-  transition: background .1s, border-color .1s;
-}
-.foul-dot.active { background: var(--red); border-color: var(--red); }
-
-.btn-clear-fouls {
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 0.8rem;
-  padding: 4px;
-  line-height: 1;
-}
-.btn-clear-fouls:active { color: var(--text); }
 
 /* ─────────────────────────────────────────────────────────────────────────────
    BOX SCORE TABLE

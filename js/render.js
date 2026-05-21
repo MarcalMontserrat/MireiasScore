@@ -7,9 +7,9 @@ function renderQuarterBtns() {
     const btn     = document.createElement('button');
     const hasData = state.quarterPts.A[i] > 0 || state.quarterPts.B[i] > 0;
     btn.className = 'quarter-btn' +
-      (state.quarter === i  ? ' active'  : '') +
+      (state.quarter === i ? ' active' : '') +
       (hasData && state.quarter !== i ? ' played' : '');
-    btn.textContent = label;
+    btn.textContent    = label;
     btn.dataset.quarter = i;
     container.appendChild(btn);
   });
@@ -25,20 +25,7 @@ function renderScores() {
     `${QUARTER_LABELS[q]} · ${state.quarterPts.B[q]} pts`;
 }
 
-function renderFouls(team) {
-  const container = document.getElementById('fouls' + team);
-  container.innerHTML = '';
-  for (let i = 0; i < MAX_FOULS; i++) {
-    const dot       = document.createElement('div');
-    dot.className   = 'foul-dot' + (i < state.fouls[team] ? ' active' : '');
-    dot.dataset.team  = team;
-    dot.dataset.index = i;
-    container.appendChild(dot);
-  }
-}
-
 function renderBoxScore() {
-  // sync team name headers
   document.getElementById('thA').textContent =
     document.getElementById('nameA').value || 'LOCAL';
   document.getElementById('thB').textContent =
@@ -48,7 +35,7 @@ function renderBoxScore() {
   tbody.innerHTML = '';
 
   QUARTER_LABELS.forEach((label, i) => {
-    const tr        = document.createElement('tr');
+    const tr = document.createElement('tr');
     if (i === state.quarter) tr.className = 'current-quarter';
     tr.innerHTML =
       `<td>${label}</td>` +
@@ -57,7 +44,7 @@ function renderBoxScore() {
     tbody.appendChild(tr);
   });
 
-  const totRow    = document.createElement('tr');
+  const totRow     = document.createElement('tr');
   totRow.className = 'total-row';
   totRow.innerHTML =
     `<td>TOTAL</td>` +
@@ -74,7 +61,7 @@ function renderHistory() {
     const name = document.getElementById('name' + e.team).value || e.team;
     const sign = e.pts > 0 ? '+' : '';
     li.innerHTML =
-      `[${QUARTER_LABELS[e.quarter]} · ${e.time}] ` +
+      `[${QUARTER_LABELS[e.quarter]}] ` +
       `<strong>${name}</strong> ${sign}${e.pts} → ${e.totalA}–${e.totalB}`;
     list.appendChild(li);
   });
@@ -83,8 +70,6 @@ function renderHistory() {
 function renderAll() {
   renderQuarterBtns();
   renderScores();
-  renderFouls('A');
-  renderFouls('B');
   renderBoxScore();
   renderHistory();
 }
