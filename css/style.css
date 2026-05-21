@@ -64,18 +64,16 @@ h1 {
   padding: 10px 12px;
 }
 
-/* horizontally scrollable quarter strip */
+/* horizontally scrollable quarter strip — fills full width */
 .quarter-scroll {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  width: 100%;
 }
-.quarter-scroll::-webkit-scrollbar { display: none; }
 
 .quarter-group {
   display: flex;
   gap: 6px;
-  min-width: max-content;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .quarter-btn {
@@ -83,15 +81,13 @@ h1 {
   border: 2px solid transparent;
   color: var(--muted);
   border-radius: 8px;
-  padding: 0 14px;
+  padding: 0;
   height: 40px;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  white-space: nowrap;
+  flex: 1;
   transition: border-color .12s, color .12s;
-  /* touch-friendly minimum */
-  min-width: 44px;
 }
 .quarter-btn.active { border-color: var(--orange); color: var(--orange); }
 .quarter-btn.played { color: var(--text); }
@@ -109,11 +105,11 @@ h1 {
 .team {
   background: var(--surface);
   border-radius: 16px;
-  padding: 14px 10px;
+  padding: 12px 10px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
 .team-name {
@@ -152,8 +148,9 @@ h1 {
 .score-btns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 7px;
+  gap: 6px;
   width: 100%;
+  margin-top: 4px;
 }
 
 .btn-score {
@@ -277,36 +274,6 @@ h1 {
 .btn-action:active { background: var(--surface2); }
 .btn-action.danger { color: var(--red); }
 .btn-action.danger:active { background: #2a1010; }
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   HISTORY
-───────────────────────────────────────────────────────────────────────────── */
-.history-block details summary {
-  cursor: pointer;
-  font-size: 0.8rem;
-  color: var(--muted);
-  padding: 4px 0;
-  list-style: none;
-}
-
-.history-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 8px;
-  max-height: 160px;
-  overflow-y: auto;
-}
-
-.history-list li {
-  background: var(--surface);
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-.history-list li strong { color: var(--text); }
 
 /* ─────────────────────────────────────────────────────────────────────────────
    MODAL

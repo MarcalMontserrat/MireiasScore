@@ -53,23 +53,10 @@ function renderBoxScore() {
   tbody.appendChild(totRow);
 }
 
-function renderHistory() {
-  const list = document.getElementById('historyList');
-  list.innerHTML = '';
-  [...state.history].reverse().forEach(e => {
-    const li   = document.createElement('li');
-    const name = document.getElementById('name' + e.team).value || e.team;
-    const sign = e.pts > 0 ? '+' : '';
-    li.innerHTML =
-      `[${QUARTER_LABELS[e.quarter]}] ` +
-      `<strong>${name}</strong> ${sign}${e.pts} → ${e.totalA}–${e.totalB}`;
-    list.appendChild(li);
-  });
-}
+function renderHistory() {} // removed — kept as no-op so app.js doesn't break
 
 function renderAll() {
   renderQuarterBtns();
   renderScores();
   renderBoxScore();
-  renderHistory();
 }

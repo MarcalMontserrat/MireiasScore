@@ -10,7 +10,6 @@ const state = {
     B: Array(NUM_QUARTERS).fill(0),
   },
   quarter: 0,    // 0-indexed active quarter
-  history: [],   // { team, pts, quarter, totalA, totalB }
 };
 
 function totalScore(team) {
@@ -22,19 +21,10 @@ function addScore(team, pts) {
   const cur = state.quarterPts[team][q];
   if (cur + pts < 0) return;
   state.quarterPts[team][q] = cur + pts;
-  state.history.push({
-    team, pts, quarter: q,
-    totalA: totalScore('A'),
-    totalB: totalScore('B'),
-  });
 }
 
 function undoLast() {
-  const last = state.history.pop();
-  if (!last) return false;
-  state.quarterPts[last.team][last.quarter] =
-    Math.max(0, state.quarterPts[last.team][last.quarter] - last.pts);
-  return true;
+  return false; // history removed — no-op kept for safety
 }
 
 function resetState() {
@@ -43,5 +33,4 @@ function resetState() {
     B: Array(NUM_QUARTERS).fill(0),
   };
   state.quarter = 0;
-  state.history = [];
 }

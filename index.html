@@ -6,13 +6,13 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>🏀 Pre-Mini Marcador</title>
+  <title>Mireia's Score</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
   <header>
-    <h1>🏀 Pre-Mini</h1>
+    <h1>🏀 Mireia's Score</h1>
   </header>
 
   <!-- QUARTER SELECTOR -->
@@ -78,19 +78,11 @@
     <button class="btn-action danger" id="btnReset">🔄 Reiniciar</button>
   </footer>
 
-  <!-- HISTORY -->
-  <section class="history-block">
-    <details>
-      <summary>📋 Historial</summary>
-      <ul class="history-list" id="historyList"></ul>
-    </details>
-  </section>
-
   <!-- RESET MODAL -->
   <div class="modal-overlay" id="resetModal" role="dialog" aria-modal="true">
     <div class="modal">
       <h2>¿Reiniciar partido?</h2>
-      <p>Se borrarán todos los puntos, faltas e historial.</p>
+      <p>Se borrarán todos los puntos.</p>
       <div class="modal-btns">
         <button class="btn-action danger" id="btnConfirmReset">Sí, reiniciar</button>
         <button class="btn-action" id="btnCancelReset">Cancelar</button>
