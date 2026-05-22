@@ -32,9 +32,15 @@ body {
   flex-direction: column;
   gap: 10px;
   padding: 10px;
-  /* prevent text selection when tapping fast */
   -webkit-user-select: none;
   user-select: none;
+  /* prevent double-tap zoom */
+  touch-action: manipulation;
+}
+
+/* disable double-tap zoom on all interactive elements */
+button, input, a, details, summary {
+  touch-action: manipulation;
 }
 
 /* allow text selection only in editable fields */
